@@ -107,7 +107,7 @@ while True:
       worksheet.write(row, col, rows[cols[col]])
     row += 1
  except pymysql.err.DatabaseError, e:
-  print "SQL Query is "
+  print "Check the Query, Table Structure"
   setSqlQuery()
  else:
    workbook.close()

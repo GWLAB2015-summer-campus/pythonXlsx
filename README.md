@@ -1,7 +1,7 @@
 # PythonXlsx
 
 ### 1. 구현 환경
-* os X 10.11.2
+* osX 10.11.2
 
 * python 2.7.10
 
@@ -38,6 +38,36 @@
  * query 구문이 이상하거나 존재 하지않는 column, table 입력시 예외 처리되어 다시 입력 받지만 가급적 확인 하고 입력
  
  * Test Query : SELECT Startup, TimeStamp from T_PCS_UNIT WHERE TimeStamp <= DATE_FORMAT('2016-04-27 03:30:00','%Y-%m-%d %H:%i:%s')
+ 
+### 5. 입력 예시
+ 
+ ```
+ Query String(SELECT ('column1, cloumn2') + FROM ('talbe1, table2') + OPTION(WHERE ~~ ))
+ 
+ Input Table Count : 
+ 
+ 1
+ Input Table name
+ 
+ T_PCS_UNIT
+ 
+ Input Column Count : 
+ 
+ 2
+ 
+ Input Colunm Name
+ 
+ Startup     
+
+ 
+ TimeStamp
+ 
+ Input Option( ex) where ~~ )
+ 
+ WHERE TimeStamp <= DATE_FORMAT('2016-04-27 03:30:00','%Y-%m-%d %H:%i:%s')
+ 
+ Export Xlsx Complete!
+ ```
 
 
 Q) ghjf1278@naver.com 
