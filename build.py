@@ -112,6 +112,8 @@ while True:
  else:
    workbook.close()
    connection.close()
+
+   print "Export Xlsx Complete!"
    break;
 
 #_check_mysql_exception
