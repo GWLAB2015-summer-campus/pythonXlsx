@@ -49,6 +49,8 @@ def describeTable():
 
  tables = dict()
  idx = 0
+
+ print "Input Table Name\n"
  while True:
   tableName=raw_input()
   try:
@@ -111,15 +113,37 @@ def setSqlQuery(tables):
    break;
 
  global colStr ###
- colStr = " "
- print "Input Colunm Name"
+ colStr = ""
+ print "Input Column Name"
  for idx in range(0, int(colCount), 1):
   cols[idx] = raw_input()
+
+### dirty
+  if (cols[idx] == '*') :
+   for i in range(0, int(tableCount), 1):
+    try:
+     with connection.cursor() as cursor:
+      sql = "DESCRIBE " + tables[i]
+      cursor.execute(sql)
+      result = cursor.fetchall()
+      colCount = len(result)
+      for j in range(0,int(colCount),1):
+       cols[j] = result[j]['Field']
+       if (j != int(colCount) -1):
+        colStr += cols[j] + ', '
+       else:
+        colStr += cols[j] + ' '
+    except pymysql.err.DatabaseError ,e :
+     print e
+   break
+### dirty
   if (idx != (int)(colCount) - 1):
    colStr += cols[idx] + ', '
   else:
    colStr += cols[idx] + ' '
+
  print colStr
+
 
  print "Input Option( ex) where ~~ )"
  global optStr ###
@@ -138,6 +162,7 @@ setSqlQuery(tables) ### set Query
 
 
 while True:
+ cnt = 0
  try:
   with connection.cursor() as cursor:
    sql = "SELECT "+ colStr +"FROM " + tableStr + optStr
@@ -157,6 +182,7 @@ while True:
      worksheet.write(0, col, cols[col]);
      worksheet.set_column(0,col,20)
 
+
    #value = list()
    for rows in result:
 
@@ -168,6 +194,26 @@ while True:
       worksheet.write(row, col, rows[cols[col]])
     row += 1
   print sql
+  print row
+
+  print "Input column Count will be used chart (Max : " + str(colCount) + ")"
+  c = raw_input()
+  sheet = dict()
+  chart = workbook.add_chart({'type': 'line'})
+  for i in range(0,int(c),1):
+   print "Column " + str(i+1)
+   sheet[i] = int(raw_input())
+   sheet[i] = chr(sheet[i] + 64)
+   print sheet[i]
+   # Add a series to the chart.
+   sheetStr = "=Sheet1!$" + sheet[i] + "$1:$" + sheet[i] + "$" + str(row)
+   chart.add_series({'values': sheetStr})
+
+
+
+
+  # Insert the chart into the worksheet.
+  worksheet.insert_chart('F1', chart)
 
  except pymysql.err.DatabaseError, e:
   print sql
