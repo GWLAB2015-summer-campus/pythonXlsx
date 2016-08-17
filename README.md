@@ -24,9 +24,9 @@
 
   1. table count, name : 검색할 테이블의 갯수와 이름 (ex) from 'T_PCS_UNIT')
 
-  2. column count, name : 가져올 열의 갯수와 이름, * 의 경우 count를 1 name을 * 로 입력 ( ex) select 'TimeStamp')
+  2. column count, name : 가져올 열의 갯수와 이름, * 의 경우 count를 1 name을 * 로 입력 ( 조회하는 table이 1개인 경우만 사용가능 )
 
-  3. option : query에서 where 절 부터 끝까지 입력 ( ex) where TimeStamp <= DATE_FORMAT('2016-04-27 03:30:00))
+  3. option : query에서 where 절 부터 끝까지 입력 ( ex) where TimeStamp <= DATE_FORMAT('2016-04-28 17:30:00))
 
 ### 4. 주의사항
  * 데이터 양이 많을 경우 시간이 다소 걸림 complete message가 출력되야 완료된 것
@@ -37,36 +37,45 @@
  
  * query 구문이 이상하거나 존재 하지않는 column, table 입력시 예외 처리되어 다시 입력 받지만 가급적 확인 하고 입력
  
- * Test Query : SELECT Startup, TimeStamp from T_PCS_UNIT WHERE TimeStamp <= DATE_FORMAT('2016-04-27 03:30:00','%Y-%m-%d %H:%i:%s')
+ * Test Query : SELECT Startup, TimeStamp from T_PCS_UNIT WHERE TimeStamp <= DATE_FORMAT('2016-04-28 03:30:00','%Y-%m-%d %H:%i:%s')
  
 ### 5. 입력 예시
  
  ```
- Query String(SELECT ('column1, cloumn2') + FROM ('talbe1, table2') + OPTION(WHERE ~~ ))
- 
- Input Table Count : 
- 
- 1
- Input Table name
- 
- T_PCS_UNIT
- 
- Input Column Count : 
- 
- 2
- 
- Input Colunm Name
- 
- Startup     
+Input Number Of Tables
+1
+Input Table Name
+T_PCS_UNIT
 
+Input Column Count
+3
+
+Input Column Name
+Startup
+Reconn_Int
+TimeStamp
+
+Startup, Reconn_Int, TimeStamp 
+
+Input Option( ex) where ~~ )
+WHERE TimeStamp <= DATE_FORMAT('2016-04-28 03:30:00','%Y-%m-%d %H:%i:%s')
+ SELECT Startup, Reconn_Int, TimeStamp FROM T_PCS_UNIT WHERE TimeStamp <= DATE_FORMAT('2016-04-28 03:30:00','%Y-%m-%d %H:%i:%s')
  
- TimeStamp
- 
- Input Option( ex) where ~~ )
- 
- WHERE TimeStamp <= DATE_FORMAT('2016-04-27 03:30:00','%Y-%m-%d %H:%i:%s')
- 
- Export Xlsx Complete!
+
+Input column Count will be used chart (Max : 3)
+2
+
+Startup A : 1
+Reconn_Int B : 2
+TimeStamp C : 3
+
+Column 1
+1
+Column 2
+2
+
+Export Xlsx Complete!
+
  ```
 
 

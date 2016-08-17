@@ -40,17 +40,17 @@ def dbConnect():
 
 
 def describeTable():
- print "Input Number Of Tables\n"
+ print "Input Number Of Tables"
  try:
   tableCount = int(raw_input())
  except ValueError:
-  print "Table Count must be Integer\n"
+  print "Table Count must be Integer"
 
 
  tables = dict()
  idx = 0
 
- print "Input Table Name\n"
+ print "Input Table Name"
  while True:
   tableName=raw_input()
   try:
@@ -88,7 +88,7 @@ def setSqlQuery(tables):
  global cols ###
  cols = dict()
 
- print "### Query String(SELECT ('column1, cloumn2') + FROM ('talbe1, table2') + OPTION(WHERE ~~ ))\n"
+ print "### Query String(SELECT ('column1, cloumn2') + FROM ('talbe1, table2') + OPTION(WHERE ~~ ))"
 
 
  global tableStr ###
@@ -104,7 +104,7 @@ def setSqlQuery(tables):
 
  while True:
   try:
-   print "Input Column Count : "
+   print "Input Column Count"
    global colCount ###
    colCount = int(raw_input())
   except ValueError:
@@ -137,6 +137,7 @@ def setSqlQuery(tables):
      print e
    break
 ### dirty
+
   if (idx != (int)(colCount) - 1):
    colStr += cols[idx] + ', '
   else:
@@ -155,7 +156,7 @@ def setSqlQuery(tables):
 
 dbConnect()
 
-print "### DataBase export to xlsx ###\n"
+print "### DataBase export to xlsx ###"
 
 tables = describeTable()
 setSqlQuery(tables) ### set Query
@@ -197,17 +198,24 @@ while True:
   print row
 
   print "Input column Count will be used chart (Max : " + str(colCount) + ")"
-  c = raw_input()
-  sheet = dict()
+  charCount = raw_input()
+
+  for col in range(0, int(colCount), 1):
+   print cols[col] + " " + chr(65 + col) + " : " +str(col + 1)
+
+  ##sheet = dict()
   chart = workbook.add_chart({'type': 'line'})
-  for i in range(0,int(c),1):
+  for i in range(0,int(charCount),1):
    print "Column " + str(i+1)
-   sheet[i] = int(raw_input())
-   sheet[i] = chr(sheet[i] + 64)
-   print sheet[i]
+   colNum = int(raw_input())
+   colName = chr(colNum + 64)
+
    # Add a series to the chart.
-   sheetStr = "=Sheet1!$" + sheet[i] + "$1:$" + sheet[i] + "$" + str(row)
-   chart.add_series({'values': sheetStr})
+   sheetStr = "=Sheet1!$" + colName + "$1:$" + colName + "$" + str(row)
+   chart.add_series({
+    'values': sheetStr,
+    'name' : str(cols[colNum - 1])
+   })
 
 
 
