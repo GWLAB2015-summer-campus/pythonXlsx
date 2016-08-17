@@ -28,6 +28,8 @@
 
   3. option : query에서 where 절 부터 끝까지 입력 ( ex) where TimeStamp <= DATE_FORMAT('2016-04-28 17:30:00))
 
+  4. chart column count, column number : 차트에 이용될 열의 갯수, 열의 번호(1 = A, 2 = B)
+
 ### 4. 주의사항
  * 데이터 양이 많을 경우 시간이 다소 걸림 complete message가 출력되야 완료된 것
  
