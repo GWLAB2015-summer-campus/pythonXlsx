@@ -221,7 +221,8 @@ while True:
 
 
   # Insert the chart into the worksheet.
-  worksheet.insert_chart('F1', chart)
+
+  worksheet.insert_chart(0,int(colCount), chart)
 
  except pymysql.err.DatabaseError, e:
   print sql
