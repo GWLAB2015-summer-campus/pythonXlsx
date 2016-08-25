@@ -40,12 +40,14 @@ def dbConnect():
 
 
 def describeTable():
- print "Input Number Of Tables"
- try:
-  tableCount = int(raw_input())
- except ValueError:
-  print "Table Count must be Integer"
-
+ while True:
+  print "Input Number Of Tables"
+  try:
+   tableCount = int(raw_input())
+  except ValueError:
+   print "Table Count must be Integer"
+  else :
+   break;
 
  tables = dict()
  idx = 0
@@ -93,6 +95,7 @@ def setSqlQuery(tables):
 
  global tableStr ###
  tableCount = len(tables)
+ global tableStr
  tableStr = ""
 
  for idx in range(0, int(tableCount), 1):
@@ -160,69 +163,95 @@ print "### DataBase export to xlsx ###"
 
 tables = describeTable()
 setSqlQuery(tables) ### set Query
-
-
+workbook = list()
+worksheet = list()
+res = list()
+row = list()
 while True:
  cnt = 0
  try:
   with connection.cursor() as cursor:
+   threshold = 1000
    sql = "SELECT "+ colStr +"FROM " + tableStr + optStr
    cursor.execute(sql)
    result = cursor.fetchall()
-
-   # Create WorkSheet
-   workbook = xlsxwriter.Workbook('data.xlsx')
-   worksheet = workbook.add_worksheet()
-
-   row = 1
-   date_format = workbook.add_format()
-   date_format.set_num_format('dd/mm/yyyy / hh:mm:ss')
-
-   # Sheet Header
-   for col in range(0, int(colCount), 1):
-     worksheet.write(0, col, cols[col]);
-     worksheet.set_column(0,col,20)
+   length = (len(result)/threshold) + 2
 
 
-   #value = list()
-   for rows in result:
+
+   for idx in range(1, length ,1) :
+    print idx
+    if idx != (length - 1) :
+     res.append(result[(idx-1) * threshold :idx * threshold])
+    else :
+     res.append(result[(idx-1) * threshold : ])
+
+    # Create WorkSheet
+    sheetName = tableStr + "dump"+str(idx)+".xlsx"
+
+
+    workbook.append(xlsxwriter.Workbook(sheetName))
+    worksheet.append(workbook[idx-1].add_worksheet())
+
+    row.append(1)
+    date_format = workbook[idx-1].add_format()
+    date_format.set_num_format('dd/mm/yyyy / hh:mm:ss')
+
+    # Sheet Header
+    for col in range(0, int(colCount), 1):
+      worksheet[idx-1].write(0, col, cols[col]);
+      worksheet[idx-1].set_column(0,col,20)
+
+    #value = list()
+    for rows in res[idx-1]:
+
+     for col in range(0, int(colCount), 1):
+      if (type(rows[cols[col]]) == type(datetime.datetime.now())):  ## how to compare datetime type..
+
+       worksheet[idx-1].write(row[idx-1], col, rows[cols[col]], date_format)
+      else:
+       worksheet[idx-1].write(row[idx-1], col, rows[cols[col]])
+     row[idx-1] += 1
+   #print sql
+    print row[idx-1]
+
+   ##Chart
+   print "Will use chart [y/n]"
+   yn = raw_input();
+   if yn == 'y' :
+    print "Input column Count will be used chart (Max : " + str(colCount) + ")"
+    charCount = raw_input()
 
     for col in range(0, int(colCount), 1):
-     if (type(rows[cols[col]]) == type(datetime.datetime.now())):  ## how to compare datetime type..
+     print cols[col] + " " + chr(65 + col) + " : " +str(col + 1)
 
-      worksheet.write(row, col, rows[cols[col]], date_format)
-     else:
-      worksheet.write(row, col, rows[cols[col]])
-    row += 1
-  print sql
-  print row
+    ##sheet = dict()
+    chart = list()
+    #sheetStr = list()
 
-  print "Input column Count will be used chart (Max : " + str(colCount) + ")"
-  charCount = raw_input()
+    for j in range(1, length, 1):
+     # Add a series to the chart.
+     chart.append(workbook[j-1].add_chart({'type': 'line'}))
 
-  for col in range(0, int(colCount), 1):
-   print cols[col] + " " + chr(65 + col) + " : " +str(col + 1)
+    for i in range(0,int(charCount),1):
+     print "Column " + str(i+1)
+     colNum = int(raw_input())
+     colName = chr(colNum + 64)
 
-  ##sheet = dict()
-  chart = workbook.add_chart({'type': 'line'})
-  for i in range(0,int(charCount),1):
-   print "Column " + str(i+1)
-   colNum = int(raw_input())
-   colName = chr(colNum + 64)
+     for j in range(1, length, 1):
+      sheetStr = "=Sheet1!$" + colName + "$1:$" + colName + "$" + str(row[j-1])
+      categoryStr = "=Sheet1!$" + 'J' + "$1:$" + 'J' + "$" + str(row[j-1])
 
-   # Add a series to the chart.
-   sheetStr = "=Sheet1!$" + colName + "$1:$" + colName + "$" + str(row)
-   chart.add_series({
-    'values': sheetStr,
-    'name' : str(cols[colNum - 1])
-   })
-
+      chart[j-1].add_series({
+       'categories': categoryStr,
+       'values': sheetStr,
+       'name' : str(cols[colNum - 1])
+      })
+     for j in range(1, length, 1):
+      worksheet[j - 1].insert_chart(0, int(colCount), chart[j-1])
+    # Insert the chart into the worksheet.
 
 
-
-  # Insert the chart into the worksheet.
-
-  worksheet.insert_chart(0,int(colCount), chart)
 
  except pymysql.err.DatabaseError, e:
   print sql
@@ -230,10 +259,11 @@ while True:
   tables = describeTable()
   setSqlQuery(tables)
  else:
-   workbook.close()
-   connection.close()
+  for j in range(1, length, 1):
+   workbook[j-1].close()
+  connection.close()
 
-   print "Export Xlsx Complete!"
-   break;
+  print "Export Xlsx Complete!"
+  break;
 
 #_check_mysql_exception
