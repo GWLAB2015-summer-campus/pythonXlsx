@@ -28,7 +28,9 @@
 
   3. option : query에서 where 절 부터 끝까지 입력 ( ex) where TimeStamp <= DATE_FORMAT('2016-04-28 17:30:00))
 
-  4. chart column count, column number : 차트에 이용될 열의 갯수, 열의 번호(1 = A, 2 = B)
+  4. threshold : 데이터 양이 많을 경우 threshold로 나누어 액셀 파일 생성
+
+  5. chart column count, column number : 차트에 이용될 열의 갯수, 열의 번호(1 = A, 2 = B)
 
 ### 4. 주의사항
  * 데이터 양이 많을 경우 시간이 다소 걸림 complete message가 출력되야 완료된 것
@@ -63,6 +65,13 @@ Input Option( ex) where ~~ )
 WHERE TimeStamp <= DATE_FORMAT('2016-04-28 03:30:00','%Y-%m-%d %H:%i:%s')
  SELECT Startup, Reconn_Int, TimeStamp FROM T_PCS_UNIT WHERE TimeStamp <= DATE_FORMAT('2016-04-28 03:30:00','%Y-%m-%d %H:%i:%s')
  
+Data Length : 1707
+Input threshold
+2000
+
+Will use chart [y/n]
+y
+
 
 Input column Count will be used chart (Max : 3)
 2
@@ -79,8 +88,6 @@ Column 2
 Export Xlsx Complete!
 
  ```
-
-
 Q) ghjf1278@naver.com 
 
 
